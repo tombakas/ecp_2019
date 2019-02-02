@@ -20,16 +20,21 @@ def main():
 
     data = read_file(input_file).strip().split("\n")
 
-    students, exam_count = parse_studens(data)
+    students, exam_count, exam_position = parse_studens(data)
     params = parse_header(data[0])
 
     for key, item in students.items():
         print(item, "x", key)
 
+    print("\nFrequencies")
     for exam, frequency in sorted(list(exam_count.items()), key=lambda x: x[1]):
         print("{:>3}: {:>3}".format(exam, frequency))
 
-    print("Exams:", params["exams_tot"])
+    print("\nPositions:")
+    for exam, positions in sorted(list(exam_position.items()), key=lambda x: x[0]):
+        print("{:>3}: {}".format(exam, positions))
+
+    print("\nExams:", params["exams_tot"])
     print("Students:", params["students"])
     print("Days:", params["days"])
     print("Students:", params["students"])
@@ -51,10 +56,11 @@ def parse_header(header):
 
 
 def parse_studens(data):
-    THRESHOLD = 7
+    THRESHOLD = 0
 
     student_sets = defaultdict(int)
     exam_count = defaultdict(int)
+    exam_position = defaultdict(lambda: [0, 0, 0])
 
     exam_list = [item.split(" ")[1:] for item in data[1:-1]]
     exam_list.sort(key=len, reverse=True)
@@ -62,8 +68,14 @@ def parse_studens(data):
     for i, exams in enumerate(exam_list):
         a = set(exams)
 
-        for exam in exams:
+        for i, exam in enumerate(exams):
             exam_count[exam] += 1
+            if i == 0:
+                exam_position[exam][0] += 1
+            elif i == len(exams) - 1:
+                exam_position[exam][2] += 1
+            else:
+                exam_position[exam][1] += 1
 
         found = False
         for key, value in student_sets.items():
@@ -76,7 +88,7 @@ def parse_studens(data):
         if not found:
             student_sets[" ".join(exams)] += 1
 
-    return student_sets, exam_count
+    return student_sets, exam_count, exam_position
 
 
 if __name__ == "__main__":
