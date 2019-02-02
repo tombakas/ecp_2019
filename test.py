@@ -23,6 +23,8 @@ def main():
     students, exam_count = parse_studens(data)
     params = parse_header(data[0])
 
+    exams_by_freq = [x[0] for x in sorted(list(exam_count.items()), key=lambda x: x[1], reverse=True)]
+
     for key, item in students.items():
         print(item, "x", key)
 
