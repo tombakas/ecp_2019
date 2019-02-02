@@ -46,6 +46,8 @@ def parse_header(header):
 
 
 def parse_studens(data):
+    THRESHOLD = 7
+
     students = defaultdict(int)
 
     exam_list = [item.split(" ")[1:] for item in data[1:-1]]
@@ -57,7 +59,7 @@ def parse_studens(data):
         found = False
         for key, value in students.items():
             b = set(key.split(" "))
-            if (len(a) - len(a.intersection(b))) <= 6:
+            if (len(a) - len(a.intersection(b))) <= THRESHOLD:
                 students[key] += 1
                 found = True
                 break
